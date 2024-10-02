@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import VerificationModal from '../common/VerificationModal';
 import { TextField, Button, Typography, Container, Card, CardContent, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,6 +12,7 @@ const Register = () => {
     confirmPassword: '',
   });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,6 +25,20 @@ const Register = () => {
     setTimeout(() => {
       navigate('/login');
     }, 2000);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleVerifyCode = (code) => {
+    // Add logic to verify the code
+    console.log('Verification code entered:', code);
+    handleCloseModal();
   };
 
   return (
@@ -73,6 +89,14 @@ const Register = () => {
             <Button type="submit" variant="contained" color="primary" fullWidth>
               Register
             </Button>
+            <Button variant="contained" color="primary" onClick={handleOpenModal}>
+              Access Private Records
+            </Button>
+            <VerificationModal
+              open={isModalOpen}
+              handleClose={handleCloseModal}
+              handleVerify={handleVerifyCode}
+            />
           </form>
         </CardContent>
       </Card>

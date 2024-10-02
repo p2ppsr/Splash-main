@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Divider } from '@mui/material';
+import VerificationModal from '../common/VerificationModal';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const Profile = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -32,6 +34,20 @@ const Profile = () => {
     console.log('Profile updated:', formData);
     setSnackbarOpen(true);
     setIsEditing(false);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleVerifyCode = (code) => {
+    // Add logic to verify the code
+    console.log('Verification code entered:', code);
+    handleCloseModal();
   };
 
   return (
@@ -187,6 +203,14 @@ const Profile = () => {
           )}
         </CardContent>
       </Card>
+      <Button variant="contained" color="primary" onClick={handleOpenModal}>
+        Access Private Records
+      </Button>
+      <VerificationModal
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        handleVerify={handleVerifyCode}
+      />
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',

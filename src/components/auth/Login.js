@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
+import VerificationModal from '../common/VerificationModal';
 import { Button, Typography, Container, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [modalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleLoginClick = () => {
-    setModalOpen(true);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false);
-    navigate('/dashboard');
+    setIsModalOpen(false);
+  };
+
+  const handleVerifyCode = (code) => {
+    // Add logic to verify the code
+    console.log('Verification code entered:', code);
+    handleCloseModal();
   };
 
   return (
@@ -20,22 +26,16 @@ const Login = () => {
       <Card>
         <CardContent>
           <Typography variant="h4" gutterBottom>Login</Typography>
-          <Button onClick={handleLoginClick} variant="contained" color="primary" fullWidth>
-            Login with MetaNet ID
+          <Button onClick={handleOpenModal} variant="contained" color="primary" fullWidth>
+            Access Private Records
           </Button>
         </CardContent>
       </Card>
-      <Dialog open={modalOpen} onClose={handleCloseModal}>
-        <DialogTitle>MetaNet ID verified</DialogTitle>
-        <DialogContent>
-          <Typography>Your MetaNet ID has been successfully verified.</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="primary" variant="contained">
-            Continue
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <VerificationModal
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        handleVerify={handleVerifyCode}
+      />
     </Container>
   );
 };
