@@ -71,10 +71,10 @@ const Profile = () => {
     <Container maxWidth="md">
       <Card>
         <CardContent>
-          <Typography variant="h4" gutterBottom align="left">Profile</Typography>
+          <Typography variant="h4" gutterBottom align="center">Profile</Typography>
           {isEditing ? (
             <form onSubmit={handleSubmit}>
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextField
                     name="name"
@@ -155,7 +155,7 @@ const Profile = () => {
                     variant="contained"
                     component="label"
                     fullWidth
-                    style={{ marginTop: '20px' }}
+                    sx={{ mt: 2 }}
                   >
                     Upload Photo ID
                     <input

@@ -61,18 +61,18 @@ const Dashboard = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4" align="left">Dashboard</Typography>
         <Box display="flex" alignItems="center">
           <Tooltip title="Notifications">
-            <IconButton color="primary">
+            <IconButton color="primary" aria-label="notifications">
               <Badge badgeContent={authRequests.length} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
           </Tooltip>
           <Tooltip title="Export dashboard data">
-            <Button variant="contained" color="primary" onClick={handleExport} startIcon={<DownloadIcon />}>
+            <Button variant="contained" color="primary" onClick={handleExport} startIcon={<DownloadIcon />} sx={{ ml: 2 }}>
               Export
             </Button>
           </Tooltip>
@@ -92,16 +92,17 @@ const Dashboard = () => {
             </InputAdornment>
           ),
         }}
+        sx={{ mb: 3 }}
       />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
+              <Box display="flex" alignItems="center" mb={2}>
                 <DiveIcon color="primary" />
                 <Typography variant="h6" ml={1}>Total Dives</Typography>
               </Box>
-              <Typography variant="h4">50</Typography>
+              <Typography variant="h4" mb={2}>50</Typography>
               <Button component={Link} to="/divelogs" size="small" color="primary">
                 View Logs
               </Button>
@@ -111,11 +112,11 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
+              <Box display="flex" alignItems="center" mb={2}>
                 <EquipmentIcon color="primary" />
                 <Typography variant="h6" ml={1}>Equipment Status</Typography>
               </Box>
-              <Typography variant="h4">All Good</Typography>
+              <Typography variant="h4" mb={2}>All Good</Typography>
               <Button component={Link} to="/equipment" size="small" color="primary">
                 Check Equipment
               </Button>
@@ -125,12 +126,12 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
+              <Box display="flex" alignItems="center" mb={2}>
                 <CertificationIcon color="primary" />
                 <Typography variant="h6" ml={1}>Certification Status</Typography>
               </Box>
-              <Typography variant="body1">Advanced Open Water</Typography>
-              <Typography variant="body2">Expires: Dec 31, 2024</Typography>
+              <Typography variant="body1" mb={1}>Advanced Open Water</Typography>
+              <Typography variant="body2" mb={2}>Expires: Dec 31, 2024</Typography>
               <Button component={Link} to="/profile" size="small" color="primary">
                 View Profile
               </Button>
@@ -140,11 +141,11 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
+              <Box display="flex" alignItems="center" mb={2}>
                 <CalendarTodayIcon color="primary" />
                 <Typography variant="h6" ml={1}>Upcoming Dives</Typography>
               </Box>
-              <List dense={isMobile}>
+              <List dense={isMobile} sx={{ mb: 2 }}>
                 {filteredDives.map((dive) => (
                   <ListItem key={dive.id}>
                     <ListItemText primary={`${dive.date} - ${dive.location}`} />
@@ -160,17 +161,17 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
+              <Box display="flex" alignItems="center" mb={2}>
                 <PendingIcon color="primary" />
                 <Typography variant="h6" ml={1}>Pending Authorizations</Typography>
               </Box>
-              <Typography variant="body1">{authRequests.length} requests</Typography>
+              <Typography variant="body1" mb={2}>{authRequests.length} requests</Typography>
               <Button 
                 variant="contained" 
                 color="primary" 
                 size="small" 
-                style={{ marginTop: '10px' }}
                 onClick={() => setShowAuthRequests(!showAuthRequests)}
+                sx={{ mb: 2 }}
               >
                 {showAuthRequests ? 'Hide' : 'Review'}
               </Button>

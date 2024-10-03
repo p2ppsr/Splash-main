@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Container, Card, CardContent, IconButton, Snackbar, Box, Pagination, Tooltip, Checkbox, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ExportIcon from '@mui/icons-material/SaveAlt'; // Import an export icon
 import AddSearchFilterSortExport from '../common/AddSearchFilterSortExport';
-import MessageModal from '../common/MessageModal'; // Import the MessageModal
+import MessageModal from '../common/MessageModal';
 
 const DiveLogList = () => {
   const [diveLogs, setDiveLogs] = useState([
@@ -60,12 +62,16 @@ const DiveLogList = () => {
     setSnackbarOpen(true);
   };
 
+  const handleBulkDelete = () => {
+    setDiveLogs(diveLogs.filter(log => !selectedLogs.includes(log.id)));
+    setSelectedLogs([]);
+    setSnackbarOpen(true);
+  };
+
   const handleExport = () => {
-    // Implement export functionality here
     const selectedItems = diveLogs.filter(log => selectedLogs.includes(log.id));
     console.log('Exporting selected dive logs:', selectedItems);
-    // You would typically generate a CSV or PDF here
-    setSelectedLogs([]); // Reset selected logs
+    setSelectedLogs([]);
   };
 
   const handleSearchChange = (e) => {
@@ -98,7 +104,6 @@ const DiveLogList = () => {
   };
 
   const handleAdvancedAnalytics = () => {
-    // Implement advanced analytics functionality here
     console.log('Displaying advanced analytics...');
   };
 
@@ -112,18 +117,32 @@ const DiveLogList = () => {
   };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>Dive Logs</Typography>
-      <AddSearchFilterSortExport
-        searchTerm={searchTerm}
-        handleSearchChange={handleSearchChange}
-        filterOptions={['All', 'Great Barrier Reef', 'Blue Hole, Belize', 'Red Sea', 'Cenote Dos Ojos, Mexico', 'Silfra, Iceland', 'Richelieu Rock, Thailand', 'SS Thistlegorm, Egypt', 'Barracuda Point, Sipadan', 'Manta Ray Night Dive, Hawaii', 'Navy Pier, Australia']}
-        handleFilterChange={handleFilterChange}
-        sortOptions={['Date', 'Depth']}
-        handleSortChange={handleSortChange}
-        handleExport={handleExport}
-        addLink="/divelog/new"
-      />
+    <Container maxWidth="lg">
+      <Typography variant="h4" gutterBottom align="center">Dive Logs</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <AddSearchFilterSortExport
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+          filterOptions={['All', 'Great Barrier Reef', 'Blue Hole, Belize', 'Red Sea', 'Cenote Dos Ojos, Mexico', 'Silfra, Iceland', 'Richelieu Rock, Thailand', 'SS Thistlegorm, Egypt', 'Barracuda Point, Sipadan', 'Manta Ray Night Dive, Hawaii', 'Navy Pier, Australia']}
+          handleFilterChange={handleFilterChange}
+          sortOptions={['Date', 'Depth']}
+          handleSortChange={handleSortChange}
+          handleExport={handleExport}
+          addLink="/divelog/new"
+        />
+        <Box>
+          <Tooltip title="Export selected logs">
+            <IconButton color="primary" onClick={handleExport} disabled={selectedLogs.length === 0}>
+              <ExportIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete selected logs">
+            <IconButton color="error" onClick={handleBulkDelete} disabled={selectedLogs.length === 0}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
       <Card>
         <CardContent>
           {paginatedLogs.map((log) => (
@@ -131,15 +150,17 @@ const DiveLogList = () => {
               key={log.id}
               expanded={expanded === log.id}
               onChange={handleAccordionChange(log.id)}
-              sx={{ backgroundColor: selectedLogs.includes(log.id) ? 'rgba(0, 0, 0, 0.04)' : 'inherit' }}
+              sx={{ backgroundColor: selectedLogs.includes(log.id) ? 'rgba(0, 0, 0, 0.04)' : 'inherit', mb: 2 }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ alignItems: 'center' }}>
-                <Checkbox
-                  checked={selectedLogs.includes(log.id)}
-                  onChange={() => handleSelect(log.id)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <Typography>{log.date} - {log.location}</Typography>
+                <Box display="flex" alignItems="center" width="100%">
+                  <Checkbox
+                    checked={selectedLogs.includes(log.id)}
+                    onChange={() => handleSelect(log.id)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <Typography variant="h6" sx={{ ml: 2 }}>{log.date} - {log.location}</Typography>
+                </Box>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography><strong>Depth:</strong> {log.depth}</Typography>
@@ -147,25 +168,40 @@ const DiveLogList = () => {
                 <Typography><strong>Water Temperature:</strong> {log.waterTemperature}</Typography>
                 <Typography><strong>Visibility:</strong> {log.visibility}</Typography>
                 <Typography><strong>Notes:</strong> {log.notes}</Typography>
-                <Tooltip title="Delete dive log">
-                  <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(log.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-                <Button variant="contained" color="primary" onClick={() => handleOpenMessageModal(log.location)} style={{ marginTop: '10px' }}>
-                  Message Diver
-                </Button>
+                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                  <Button variant="contained" color="primary" startIcon={<EditIcon />} onClick={() => console.log(`Edit log ${log.id}`)}>
+                    Edit
+                  </Button>
+                  <Button variant="contained" color="secondary" onClick={() => handleOpenMessageModal(log.location)}>
+                    Message Diver
+                  </Button>
+                  <Tooltip title="Delete dive log">
+                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(log.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </AccordionDetails>
             </Accordion>
           ))}
-          <Box display="flex" justifyContent="center" mt={2}>
-            <Button variant="contained" color="primary" onClick={handleAdvancedAnalytics} style={{ marginRight: '10px' }}>
+          <Box display="flex" justifyContent="center" mt={3} gap={2}>
+            <Button variant="contained" color="primary" onClick={handleAdvancedAnalytics}>
               Advanced Analytics
             </Button>
-            <Button variant="contained" color="secondary" onClick={handleExport}>
-              Export Logs
+            <Button variant="contained" color="secondary" onClick={handleExport} disabled={selectedLogs.length === 0}>
+              Export Selected
+            </Button>
+            <Button variant="contained" color="error" onClick={handleBulkDelete} disabled={selectedLogs.length === 0}>
+              Delete Selected
             </Button>
           </Box>
+          <Pagination
+            count={Math.ceil(filteredLogs.length / logsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            sx={{ mt: 3 }}
+          />
         </CardContent>
       </Card>
       <MessageModal
@@ -181,7 +217,7 @@ const DiveLogList = () => {
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={() => setSnackbarOpen(false)}
-        message="Dive log deleted successfully"
+        message="Dive log(s) deleted successfully"
       />
     </Container>
   );

@@ -37,9 +37,9 @@ const DiveLogForm = () => {
     <Container maxWidth="sm">
       <Card>
         <CardContent>
-          <Typography variant="h4" gutterBottom>Add/Edit Dive Log</Typography>
+          <Typography variant="h4" gutterBottom align="center">Add/Edit Dive Log</Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
                   name="date"
@@ -125,8 +125,8 @@ const DiveLogForm = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Divider style={{ margin: '20px 0' }} />
-                <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
+                <Divider sx={{ my: 2 }} />
+                <Button type="submit" variant="contained" color="primary" fullWidth>
                   Save
                 </Button>
               </Grid>
