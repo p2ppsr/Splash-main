@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Divider } from '@mui/material';
+import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Divider, Box, Tooltip, IconButton } from '@mui/material';
+import { Edit, Save, Cancel, Message, Visibility } from '@mui/icons-material';
 import VerificationModal from '../common/VerificationModal';
+import MessageModal from '../common/MessageModal';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +25,7 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -45,13 +48,20 @@ const Profile = () => {
   };
 
   const handleVerifyCode = (code) => {
-    // Add logic to verify the code
     console.log('Verification code entered:', code);
     handleCloseModal();
   };
 
+  const handleOpenMessageModal = () => {
+    setIsMessageModalOpen(true);
+  };
+
+  const handleCloseMessageModal = () => {
+    setIsMessageModalOpen(false);
+  };
+
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Card>
         <CardContent>
           <Typography variant="h4" gutterBottom align="left">Profile</Typography>
@@ -66,6 +76,7 @@ const Profile = () => {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    helperText="Enter your full name"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -77,6 +88,7 @@ const Profile = () => {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    helperText="Enter a valid email address"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -87,6 +99,7 @@ const Profile = () => {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    helperText="Enter your certification number"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -97,6 +110,7 @@ const Profile = () => {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    helperText="Enter your address"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -107,6 +121,7 @@ const Profile = () => {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    helperText="Enter your contact number"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -119,6 +134,7 @@ const Profile = () => {
                     fullWidth
                     margin="normal"
                     InputLabelProps={{ shrink: true }}
+                    helperText="Enter your date of birth"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -162,14 +178,19 @@ const Profile = () => {
                   ))}
                 </Grid>
                 <Grid item xs={12}>
-                  <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
-                    Save
-                  </Button>
+                  <Box display="flex" justifyContent="space-between" mt={2}>
+                    <Button type="submit" variant="contained" color="primary" startIcon={<Save />}>
+                      Save
+                    </Button>
+                    <Button variant="outlined" color="secondary" startIcon={<Cancel />} onClick={() => setIsEditing(false)}>
+                      Cancel
+                    </Button>
+                  </Box>
                 </Grid>
               </Grid>
             </form>
           ) : (
-            <div>
+            <Box>
               <Typography align="left"><strong>Full Name:</strong> {formData.name}</Typography>
               <Typography align="left"><strong>Email:</strong> {formData.email}</Typography>
               <Typography align="left"><strong>Certification Number:</strong> {formData.certificationNumber}</Typography>
@@ -196,20 +217,36 @@ const Profile = () => {
                   {record.fitnessCertificate && <Typography align="left"><strong>Fitness Certificate:</strong> {record.fitnessCertificate}</Typography>}
                 </div>
               ))}
-              <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={() => setIsEditing(true)}>
-                Edit
-              </Button>
-            </div>
+              <Box mt={2}>
+                <Tooltip title="Edit Profile">
+                  <IconButton color="primary" onClick={() => setIsEditing(true)}>
+                    <Edit />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="View Certifications">
+                  <IconButton color="secondary" onClick={handleOpenModal}>
+                    <Visibility />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Message Diver">
+                  <IconButton color="primary" onClick={handleOpenMessageModal}>
+                    <Message />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
           )}
         </CardContent>
       </Card>
-      <Button variant="contained" color="primary" onClick={handleOpenModal}>
-        Access Private Records
-      </Button>
       <VerificationModal
         open={isModalOpen}
         handleClose={handleCloseModal}
         handleVerify={handleVerifyCode}
+      />
+      <MessageModal
+        open={isMessageModalOpen}
+        handleClose={handleCloseMessageModal}
+        diverName={formData.name}
       />
       <Snackbar
         anchorOrigin={{

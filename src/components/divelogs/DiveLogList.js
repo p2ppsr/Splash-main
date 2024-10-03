@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Container, Card, CardContent, IconButton, Snackbar, Box, Pagination, Tooltip, Checkbox } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Container, Card, CardContent, IconButton, Snackbar, Box, Pagination, Tooltip, Checkbox, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddSearchFilterSortExport from '../common/AddSearchFilterSortExport';
+import MessageModal from '../common/MessageModal'; // Import the MessageModal
 
 const DiveLogList = () => {
   const [diveLogs, setDiveLogs] = useState([
@@ -36,6 +37,8 @@ const DiveLogList = () => {
   const [sort, setSort] = useState('');
   const [selectedLogs, setSelectedLogs] = useState([]);
   const [expanded, setExpanded] = useState(false);
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [selectedDiver, setSelectedDiver] = useState(null);
 
   const logsPerPage = 10;
   const filteredLogs = diveLogs.filter(log =>
@@ -94,6 +97,20 @@ const DiveLogList = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const handleAdvancedAnalytics = () => {
+    // Implement advanced analytics functionality here
+    console.log('Displaying advanced analytics...');
+  };
+
+  const handleOpenMessageModal = (diverName) => {
+    setSelectedDiver(diverName);
+    setIsMessageModalOpen(true);
+  };
+
+  const handleCloseMessageModal = () => {
+    setIsMessageModalOpen(false);
+  };
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>Dive Logs</Typography>
@@ -135,19 +152,27 @@ const DiveLogList = () => {
                     <DeleteIcon />
                   </IconButton>
                 </Tooltip>
+                <Button variant="contained" color="primary" onClick={() => handleOpenMessageModal(log.location)} style={{ marginTop: '10px' }}>
+                  Message Diver
+                </Button>
               </AccordionDetails>
             </Accordion>
           ))}
           <Box display="flex" justifyContent="center" mt={2}>
-            <Pagination
-              count={Math.ceil(filteredLogs.length / logsPerPage)}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
+            <Button variant="contained" color="primary" onClick={handleAdvancedAnalytics} style={{ marginRight: '10px' }}>
+              Advanced Analytics
+            </Button>
+            <Button variant="contained" color="secondary" onClick={handleExport}>
+              Export Logs
+            </Button>
           </Box>
         </CardContent>
       </Card>
+      <MessageModal
+        open={isMessageModalOpen}
+        handleClose={handleCloseMessageModal}
+        diverName={selectedDiver}
+      />
       <Snackbar
         anchorOrigin={{
           vertical: 'bottom',
