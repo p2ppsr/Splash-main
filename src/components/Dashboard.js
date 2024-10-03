@@ -55,9 +55,11 @@ const Dashboard = () => {
     <Container maxWidth="lg">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" align="left">Dashboard</Typography>
-        <Button variant="contained" color="primary" onClick={handleExport}>
-          Export
-        </Button>
+        <Tooltip title="Export dashboard data">
+          <Button variant="contained" color="primary" onClick={handleExport}>
+            Export
+          </Button>
+        </Tooltip>
       </Box>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>

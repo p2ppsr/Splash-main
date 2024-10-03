@@ -21,10 +21,10 @@ const NavMenu = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
-  const { mode } = useContext(ThemeContext);
+  const { mode } = useContext(ThemeContext); // Use mode
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -84,7 +84,13 @@ const NavMenu = () => {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar 
+        position="fixed" 
+        sx={{ 
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: mode === 'dark' ? '#333' : '#fff' // Example usage of mode
+        }}
+      >
         <Toolbar>
           {isMobile && (
             <IconButton
