@@ -33,7 +33,7 @@ const ThemeContextProvider = ({ children }) => {
           }
         : {
             primary: {
-              main: '#495057', // Muted accent color for dark theme
+              main: '#848484', // Muted accent color for dark theme
             },
             secondary: {
               main: '#adb5bd', // Muted secondary color for dark theme

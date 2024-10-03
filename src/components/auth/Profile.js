@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Divider, Box, Tooltip, IconButton } from '@mui/material';
-import { Edit, Save, Cancel, Message, Visibility } from '@mui/icons-material';
+import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Divider, Box, Tooltip, IconButton, CircularProgress, Accordion, AccordionSummary, AccordionDetails, Avatar } from '@mui/material';
+import { Edit, Save, Cancel, Message, Visibility, ExpandMore } from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
 import VerificationModal from '../common/VerificationModal';
 import MessageModal from '../common/MessageModal';
 
 const Profile = () => {
+  const theme = useTheme();
   const [formData, setFormData] = useState({
     name: 'John Doe',
     email: 'john@example.com',
@@ -26,6 +28,7 @@ const Profile = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -34,9 +37,13 @@ const Profile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Profile updated:', formData);
-    setSnackbarOpen(true);
-    setIsEditing(false);
+    setIsLoading(true);
+    setTimeout(() => {
+      console.log('Profile updated:', formData);
+      setSnackbarOpen(true);
+      setIsEditing(false);
+      setIsLoading(false);
+    }, 2000);
   };
 
   const handleOpenModal = () => {
@@ -77,6 +84,7 @@ const Profile = () => {
                     fullWidth
                     margin="normal"
                     helperText="Enter your full name"
+                    aria-label="Full Name"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -89,6 +97,7 @@ const Profile = () => {
                     fullWidth
                     margin="normal"
                     helperText="Enter a valid email address"
+                    aria-label="Email"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -100,6 +109,7 @@ const Profile = () => {
                     fullWidth
                     margin="normal"
                     helperText="Enter your certification number"
+                    aria-label="Certification Number"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -111,6 +121,7 @@ const Profile = () => {
                     fullWidth
                     margin="normal"
                     helperText="Enter your address"
+                    aria-label="Address"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -122,6 +133,7 @@ const Profile = () => {
                     fullWidth
                     margin="normal"
                     helperText="Enter your contact number"
+                    aria-label="Contact Number"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -135,6 +147,7 @@ const Profile = () => {
                     margin="normal"
                     InputLabelProps={{ shrink: true }}
                     helperText="Enter your date of birth"
+                    aria-label="Date of Birth"
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -152,37 +165,18 @@ const Profile = () => {
                       onChange={handleChange}
                     />
                   </Button>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider style={{ margin: '20px 0' }} />
-                  <Typography variant="h6" gutterBottom align="left">Certifications</Typography>
-                  {formData.certifications.map((cert) => (
-                    <div key={cert.id} style={{ marginBottom: '10px' }}>
-                      <Typography align="left"><strong>{cert.name}</strong></Typography>
-                      <Typography align="left">Issued by: {cert.issuingBody}</Typography>
-                      <Typography align="left">Date Obtained: {cert.dateObtained}</Typography>
-                    </div>
-                  ))}
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider style={{ margin: '20px 0' }} />
-                  <Typography variant="h6" gutterBottom align="left">Medical Records</Typography>
-                  {formData.medicalRecords.map((record) => (
-                    <div key={record.id} style={{ marginBottom: '10px' }}>
-                      <Typography align="left"><strong>Examination Date:</strong> {record.examinationDate}</Typography>
-                      {record.incidentDate && <Typography align="left"><strong>Incident Date:</strong> {record.incidentDate}</Typography>}
-                      {record.symptoms && <Typography align="left"><strong>Symptoms:</strong> {record.symptoms}</Typography>}
-                      {record.outcome && <Typography align="left"><strong>Outcome:</strong> {record.outcome}</Typography>}
-                      {record.fitnessCertificate && <Typography align="left"><strong>Fitness Certificate:</strong> {record.fitnessCertificate}</Typography>}
-                    </div>
-                  ))}
+                  {formData.photoID instanceof File && (
+                    <Box mt={2} display="flex" justifyContent="center">
+                      <Avatar src={URL.createObjectURL(formData.photoID)} alt="Photo ID" sx={{ width: 100, height: 100 }} />
+                    </Box>
+                  )}
                 </Grid>
                 <Grid item xs={12}>
                   <Box display="flex" justifyContent="space-between" mt={2}>
-                    <Button type="submit" variant="contained" color="primary" startIcon={<Save />}>
-                      Save
+                    <Button type="submit" variant="contained" color="primary" startIcon={<Save />} disabled={isLoading}>
+                      {isLoading ? <CircularProgress size={24} /> : 'Save'}
                     </Button>
-                    <Button variant="outlined" color="secondary" startIcon={<Cancel />} onClick={() => setIsEditing(false)}>
+                    <Button variant="outlined" color="secondary" startIcon={<Cancel />} onClick={() => setIsEditing(false)} disabled={isLoading}>
                       Cancel
                     </Button>
                   </Box>
@@ -197,39 +191,49 @@ const Profile = () => {
               <Typography align="left"><strong>Address:</strong> {formData.address}</Typography>
               <Typography align="left"><strong>Contact Number:</strong> {formData.contactNumber}</Typography>
               <Typography align="left"><strong>Date of Birth:</strong> {formData.dateOfBirth}</Typography>
-              <Divider style={{ margin: '20px 0' }} />
-              <Typography variant="h6" gutterBottom align="left">Certifications</Typography>
-              {formData.certifications.map((cert) => (
-                <div key={cert.id} style={{ marginBottom: '10px' }}>
-                  <Typography align="left"><strong>{cert.name}</strong></Typography>
-                  <Typography align="left">Issued by: {cert.issuingBody}</Typography>
-                  <Typography align="left">Date Obtained: {cert.dateObtained}</Typography>
-                </div>
-              ))}
-              <Divider style={{ margin: '20px 0' }} />
-              <Typography variant="h6" gutterBottom align="left">Medical Records</Typography>
-              {formData.medicalRecords.map((record) => (
-                <div key={record.id} style={{ marginBottom: '10px' }}>
-                  <Typography align="left"><strong>Examination Date:</strong> {record.examinationDate}</Typography>
-                  {record.incidentDate && <Typography align="left"><strong>Incident Date:</strong> {record.incidentDate}</Typography>}
-                  {record.symptoms && <Typography align="left"><strong>Symptoms:</strong> {record.symptoms}</Typography>}
-                  {record.outcome && <Typography align="left"><strong>Outcome:</strong> {record.outcome}</Typography>}
-                  {record.fitnessCertificate && <Typography align="left"><strong>Fitness Certificate:</strong> {record.fitnessCertificate}</Typography>}
-                </div>
-              ))}
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography variant="h6">Certifications</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {formData.certifications.map((cert) => (
+                    <div key={cert.id} style={{ marginBottom: '10px' }}>
+                      <Typography align="left"><strong>{cert.name}</strong></Typography>
+                      <Typography align="left">Issued by: {cert.issuingBody}</Typography>
+                      <Typography align="left">Date Obtained: {cert.dateObtained}</Typography>
+                    </div>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography variant="h6">Medical Records</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {formData.medicalRecords.map((record) => (
+                    <div key={record.id} style={{ marginBottom: '10px' }}>
+                      <Typography align="left"><strong>Examination Date:</strong> {record.examinationDate}</Typography>
+                      {record.incidentDate && <Typography align="left"><strong>Incident Date:</strong> {record.incidentDate}</Typography>}
+                      {record.symptoms && <Typography align="left"><strong>Symptoms:</strong> {record.symptoms}</Typography>}
+                      {record.outcome && <Typography align="left"><strong>Outcome:</strong> {record.outcome}</Typography>}
+                      {record.fitnessCertificate && <Typography align="left"><strong>Fitness Certificate:</strong> {record.fitnessCertificate}</Typography>}
+                    </div>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
               <Box mt={2}>
                 <Tooltip title="Edit Profile">
-                  <IconButton color="primary" onClick={() => setIsEditing(true)}>
+                  <IconButton color="primary" onClick={() => setIsEditing(true)} aria-label="Edit Profile">
                     <Edit />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="View Certifications">
-                  <IconButton color="secondary" onClick={handleOpenModal}>
+                  <IconButton color="secondary" onClick={handleOpenModal} aria-label="View Certifications">
                     <Visibility />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title="Message Diver">
-                  <IconButton color="primary" onClick={handleOpenMessageModal}>
+                  <IconButton color="primary" onClick={handleOpenMessageModal} aria-label="Message Diver">
                     <Message />
                   </IconButton>
                 </Tooltip>

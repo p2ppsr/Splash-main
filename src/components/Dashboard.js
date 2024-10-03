@@ -1,9 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { Typography, Grid, Container, Card, CardContent, Button, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, useMediaQuery, useTheme, Tooltip, Box } from '@mui/material';
+import { Typography, Grid, Container, Card, CardContent, Button, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, useMediaQuery, useTheme, Tooltip, Box, TextField, InputAdornment, Badge, IconButton } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer, Tooltip as ChartTooltip } from 'recharts';
 import { ThemeContext } from '../ThemeContext';
 import { Link } from 'react-router-dom';
 import DownloadIcon from '@mui/icons-material/Download';
+import DiveIcon from '@mui/icons-material/ScubaDiving';
+import EquipmentIcon from '@mui/icons-material/Build';
+import CertificationIcon from '@mui/icons-material/Verified';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import PendingIcon from '@mui/icons-material/HourglassEmpty';
+import SearchIcon from '@mui/icons-material/Search';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const dummyData = [
   { date: '2023-10-01', depth: 30 },
@@ -18,8 +25,9 @@ const Dashboard = () => {
   const [showAuthRequests, setShowAuthRequests] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const authRequests = [
     { id: 1, stakeholder: 'Dive Company A', requestType: 'View Dive Logs' },
@@ -46,26 +54,53 @@ const Dashboard = () => {
   };
 
   const handleExport = () => {
-    // Implement export functionality here
     console.log('Exporting dashboard data...');
-    // You would typically generate a CSV or PDF here
   };
+
+  const filteredDives = upcomingDives.filter(dive => dive.location.toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <Container maxWidth="lg">
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" align="left">Dashboard</Typography>
-        <Tooltip title="Export dashboard data">
-          <Button variant="contained" color="primary" onClick={handleExport}>
-            Export
-          </Button>
-        </Tooltip>
+        <Box display="flex" alignItems="center">
+          <Tooltip title="Notifications">
+            <IconButton color="primary">
+              <Badge badgeContent={authRequests.length} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Export dashboard data">
+            <Button variant="contained" color="primary" onClick={handleExport} startIcon={<DownloadIcon />}>
+              Export
+            </Button>
+          </Tooltip>
+        </Box>
       </Box>
+      <TextField
+        fullWidth
+        placeholder="Search upcoming dives..."
+        variant="outlined"
+        margin="normal"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Total Dives</Typography>
+              <Box display="flex" alignItems="center" mb={1}>
+                <DiveIcon color="primary" />
+                <Typography variant="h6" ml={1}>Total Dives</Typography>
+              </Box>
               <Typography variant="h4">50</Typography>
               <Button component={Link} to="/divelogs" size="small" color="primary">
                 View Logs
@@ -76,7 +111,10 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Equipment Status</Typography>
+              <Box display="flex" alignItems="center" mb={1}>
+                <EquipmentIcon color="primary" />
+                <Typography variant="h6" ml={1}>Equipment Status</Typography>
+              </Box>
               <Typography variant="h4">All Good</Typography>
               <Button component={Link} to="/equipment" size="small" color="primary">
                 Check Equipment
@@ -87,7 +125,10 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Certification Status</Typography>
+              <Box display="flex" alignItems="center" mb={1}>
+                <CertificationIcon color="primary" />
+                <Typography variant="h6" ml={1}>Certification Status</Typography>
+              </Box>
               <Typography variant="body1">Advanced Open Water</Typography>
               <Typography variant="body2">Expires: Dec 31, 2024</Typography>
               <Button component={Link} to="/profile" size="small" color="primary">
@@ -99,9 +140,12 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Upcoming Dives</Typography>
+              <Box display="flex" alignItems="center" mb={1}>
+                <CalendarTodayIcon color="primary" />
+                <Typography variant="h6" ml={1}>Upcoming Dives</Typography>
+              </Box>
               <List dense={isMobile}>
-                {upcomingDives.map((dive) => (
+                {filteredDives.map((dive) => (
                   <ListItem key={dive.id}>
                     <ListItemText primary={`${dive.date} - ${dive.location}`} />
                   </ListItem>
@@ -116,7 +160,10 @@ const Dashboard = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
-              <Typography variant="h6">Pending Authorizations</Typography>
+              <Box display="flex" alignItems="center" mb={1}>
+                <PendingIcon color="primary" />
+                <Typography variant="h6" ml={1}>Pending Authorizations</Typography>
+              </Box>
               <Typography variant="body1">{authRequests.length} requests</Typography>
               <Button 
                 variant="contained" 
