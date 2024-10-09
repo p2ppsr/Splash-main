@@ -1,12 +1,12 @@
 import React from 'react';
-import { Box, IconButton, Button, useMediaQuery, useTheme } from '@mui/material';
+import { Box, IconButton, Button, useMediaQuery, useTheme, Tooltip } from '@mui/material';
 import SearchBox from './SearchBox';
 import FilterMenu from './FilterMenu';
 import SortMenu from './SortMenu';
-import ExportButton from './ExportButton';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SortIcon from '@mui/icons-material/Sort';
 import DownloadIcon from '@mui/icons-material/Download';
+import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
 
@@ -23,6 +23,8 @@ const AddSearchFilterSortExport = ({
   showFilter = true,
   showSort = true,
   showExport = true,
+  selectedLogs = [],
+  handleBulkDelete,
 }) => {
   const theme = useTheme();
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -61,15 +63,20 @@ const AddSearchFilterSortExport = ({
           )}
         </Box>
       )}
-      {showExport && (
-        <Box mb={1}>
-          {isMediumScreen ? (
-            <IconButton onClick={handleExport}>
-              <DownloadIcon />
-            </IconButton>
-          ) : (
-            <ExportButton handleExport={handleExport} />
+      {selectedLogs && selectedLogs.length > 0 && (
+        <Box display="flex" alignItems="center" ml={2}>
+          {showExport && (
+            <Tooltip title="Export selected logs">
+              <IconButton color="primary" onClick={handleExport}>
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
           )}
+          <Tooltip title="Delete selected logs">
+            <IconButton color="error" onClick={handleBulkDelete}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       )}
     </Box>

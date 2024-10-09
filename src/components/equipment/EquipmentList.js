@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Container, Card, CardContent, Box, Pagination, Tooltip, IconButton, Checkbox } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Container, Card, CardContent, IconButton, Box, Pagination, Tooltip, Checkbox, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ExportIcon from '@mui/icons-material/SaveAlt'; // Import an export icon
 import AddSearchFilterSortExport from '../common/AddSearchFilterSortExport';
 
 const EquipmentList = () => {
-  // Mock data
   const [equipment, setEquipment] = useState([
     { id: 1, name: 'Diving Suit', status: 'Good', serialNumber: 'DS123456', purchaseDate: '2022-05-15', lastMaintenanceDate: '2023-09-01' },
     { id: 2, name: 'Oxygen Tank', status: 'Needs Maintenance', serialNumber: 'OT654321', purchaseDate: '2021-03-10', lastMaintenanceDate: '2023-08-20' },
@@ -86,27 +87,46 @@ const EquipmentList = () => {
     setEquipment(equipment.filter(item => item.id !== id));
   };
 
+  const handleBulkDelete = () => {
+    setEquipment(equipment.filter(item => !selectedEquipment.includes(item.id)));
+    setSelectedEquipment([]);
+  };
+
   const handleExport = () => {
-    // Implement export functionality here
     const selectedItems = equipment.filter(item => selectedEquipment.includes(item.id));
     console.log('Exporting selected equipment:', selectedItems);
-    // You would typically generate a CSV or PDF here
     setSelectedEquipment([]); // Reset selected equipment
   };
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>Equipment</Typography>
-      <AddSearchFilterSortExport
-        searchTerm={searchTerm}
-        handleSearchChange={handleSearchChange}
-        filterOptions={['All', 'Good', 'Needs Maintenance']}
-        handleFilterChange={handleFilterChange}
-        sortOptions={['Name', 'Status', 'Purchase Date', 'Last Maintenance Date']}
-        handleSortChange={handleSortChange}
-        handleExport={handleExport}
-        addLink="/equipment/new"
-      />
+    <Container maxWidth="lg">
+      <Typography variant="h4" gutterBottom align="center">Equipment</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <AddSearchFilterSortExport
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+          filterOptions={['All', 'Good', 'Needs Maintenance']}
+          handleFilterChange={handleFilterChange}
+          sortOptions={['Name', 'Status', 'Purchase Date', 'Last Maintenance Date']}
+          handleSortChange={handleSortChange}
+          handleExport={handleExport}
+          addLink="/equipment/new"
+          selectedLogs={selectedEquipment} // Ensure this prop is passed
+          handleBulkDelete={handleBulkDelete} // Ensure this prop is passed
+        />
+        <Box>
+          <Tooltip title="Export selected equipment">
+            <IconButton color="primary" onClick={handleExport} disabled={selectedEquipment.length === 0}>
+              <ExportIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete selected equipment">
+            <IconButton color="error" onClick={handleBulkDelete} disabled={selectedEquipment.length === 0}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      </Box>
       <Card>
         <CardContent>
           {paginatedEquipment.map((item) => (
@@ -114,36 +134,50 @@ const EquipmentList = () => {
               key={item.id}
               expanded={expanded === item.id}
               onChange={handleAccordionChange(item.id)}
-              sx={{ backgroundColor: selectedEquipment.includes(item.id) ? 'rgba(0, 0, 0, 0.04)' : 'inherit' }}
+              sx={{ backgroundColor: selectedEquipment.includes(item.id) ? 'rgba(0, 0, 0, 0.04)' : 'inherit', mb: 2 }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ alignItems: 'center' }}>
-                <Checkbox
-                  checked={selectedEquipment.includes(item.id)}
-                  onChange={() => handleSelect(item.id)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <Typography>{item.name} - {item.status}</Typography>
+                <Box display="flex" alignItems="center" width="100%">
+                  <Checkbox
+                    checked={selectedEquipment.includes(item.id)}
+                    onChange={() => handleSelect(item.id)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <Typography variant="h6" sx={{ ml: 2 }}>{item.name} - {item.status}</Typography>
+                </Box>
               </AccordionSummary>
               <AccordionDetails>
                 <Typography><strong>Serial Number:</strong> {item.serialNumber}</Typography>
                 <Typography><strong>Purchase Date:</strong> {item.purchaseDate}</Typography>
                 <Typography><strong>Last Maintenance Date:</strong> {item.lastMaintenanceDate}</Typography>
-                <Tooltip title="Delete equipment">
-                  <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(item.id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
+                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                  <Button variant="contained" color="primary" startIcon={<EditIcon />} onClick={() => console.log(`Edit equipment ${item.id}`)}>
+                    Edit
+                  </Button>
+                  <Tooltip title="Delete equipment">
+                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(item.id)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
               </AccordionDetails>
             </Accordion>
           ))}
-          <Box display="flex" justifyContent="center" mt={2}>
-            <Pagination
-              count={Math.ceil(filteredEquipment.length / itemsPerPage)}
-              page={currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
+          <Box display="flex" justifyContent="center" mt={3} gap={2}>
+            <Button variant="contained" color="primary" onClick={handleExport} disabled={selectedEquipment.length === 0}>
+              Export Selected
+            </Button>
+            <Button variant="contained" color="error" onClick={handleBulkDelete} disabled={selectedEquipment.length === 0}>
+              Delete Selected
+            </Button>
           </Box>
+          <Pagination
+            count={Math.ceil(filteredEquipment.length / itemsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            sx={{ mt: 3 }}
+          />
         </CardContent>
       </Card>
     </Container>

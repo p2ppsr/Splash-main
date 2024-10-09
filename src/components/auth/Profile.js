@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Divider, Box, Tooltip, IconButton, CircularProgress, Accordion, AccordionSummary, AccordionDetails, Avatar } from '@mui/material';
+import { TextField, Button, Typography, Container, Card, CardContent, Snackbar, Grid, Box, Tooltip, IconButton, CircularProgress, Accordion, AccordionSummary, AccordionDetails, Avatar } from '@mui/material';
 import { Edit, Save, Cancel, Message, Visibility, ExpandMore } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
 import VerificationModal from '../common/VerificationModal';
 import MessageModal from '../common/MessageModal';
+import VerifyCredentials from '../verification/VerifyCredentials';
+import VerifyLogs from '../verification/VerifyLogs';
 
 const Profile = () => {
-  const theme = useTheme();
   const [formData, setFormData] = useState({
     name: 'John Doe',
     email: 'john@example.com',
@@ -219,6 +219,22 @@ const Profile = () => {
                       {record.fitnessCertificate && <Typography align="left"><strong>Fitness Certificate:</strong> {record.fitnessCertificate}</Typography>}
                     </div>
                   ))}
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography variant="h6">Verify Credentials</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <VerifyCredentials />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                  <Typography variant="h6">Verify Logs</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <VerifyLogs />
                 </AccordionDetails>
               </Accordion>
               <Box mt={2}>

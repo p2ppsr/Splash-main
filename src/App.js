@@ -9,8 +9,6 @@ import EquipmentList from './components/equipment/EquipmentList';
 import EquipmentForm from './components/equipment/EquipmentForm';
 import MedicalRecords from './components/MedicalRecords';
 import Qualifications from './components/Qualifications';
-import VerifyCredentials from './components/verification/VerifyCredentials';
-import VerifyLogs from './components/verification/VerifyLogs';
 import Reports from './components/Reports';
 import Profile from './components/auth/Profile';
 import Settings from './components/Settings';
@@ -37,8 +35,6 @@ const App = () => {
               <Route path="/equipment/new" element={<EquipmentForm />} />
               <Route path="/medicalrecords" element={<MedicalRecords />} />
               <Route path="/qualifications" element={<Qualifications />} />
-              <Route path="/verify/credentials" element={<VerifyCredentials />} />
-              <Route path="/verify/logs" element={<VerifyLogs />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />

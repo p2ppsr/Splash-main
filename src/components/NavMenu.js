@@ -7,15 +7,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookIcon from '@mui/icons-material/Book';
 import BuildIcon from '@mui/icons-material/Build';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import ReportIcon from '@mui/icons-material/Report';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ThemeContext } from '../ThemeContext';
-import logo from '../assets/splashlogo-dark.png'; // Use the same logo for both themes
+import logo from '../assets/splashlogo-dark.png';
 
 const NavMenu = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -24,7 +21,7 @@ const NavMenu = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
-  const { mode } = useContext(ThemeContext); // Use mode
+  const { mode } = useContext(ThemeContext);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -49,10 +46,7 @@ const NavMenu = () => {
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
     { text: 'Dive Logs', path: '/divelogs', icon: <BookIcon /> },
     { text: 'Equipment', path: '/equipment', icon: <BuildIcon /> },
-    { text: 'Medical Records', path: '/medicalrecords', icon: <MedicalServicesIcon /> },
     { text: 'Qualifications', path: '/qualifications', icon: <VerifiedUserIcon /> },
-    { text: 'Verify Credentials', path: '/verify/credentials', icon: <AssignmentIndIcon /> },
-    { text: 'Verify Logs', path: '/verify/logs', icon: <AssignmentTurnedInIcon /> },
     { text: 'Reports', path: '/reports', icon: <ReportIcon /> },
     { text: 'Profile', path: '/profile', icon: <PersonIcon /> },
     { text: 'Settings', path: '/settings', icon: <SettingsIcon /> },
@@ -88,7 +82,7 @@ const NavMenu = () => {
         position="fixed" 
         sx={{ 
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: mode === 'dark' ? '#333' : '#fff' // Example usage of mode
+          backgroundColor: mode === 'dark' ? '#333' : '#fff'
         }}
       >
         <Toolbar>
@@ -125,7 +119,7 @@ const NavMenu = () => {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
+              keepMounted: true,
             }}
             sx={{
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
