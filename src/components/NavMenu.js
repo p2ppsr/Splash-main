@@ -12,14 +12,14 @@ import ReportIcon from '@mui/icons-material/Report';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { ThemeContext } from '../ThemeContext';
-import logo from '../assets/splashlogo-dark.png';
+import logoLight from '../assets/splashlogo-lite.png';
+import logoDark from '../assets/splashlogo-dark.png';
 
 const NavMenu = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const { mode } = useContext(ThemeContext);
 
@@ -37,10 +37,10 @@ const NavMenu = () => {
   };
 
   useEffect(() => {
-    if (isMediumScreen) {
+    if (!isMobile) {
       setMobileOpen(false);
     }
-  }, [isMediumScreen]);
+  }, [isMobile]);
 
   const menuItems = [
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
@@ -56,7 +56,7 @@ const NavMenu = () => {
     <div>
       <Toolbar>
         <Box display="flex" alignItems="center" justifyContent="center" width="100%">
-          <img src={logo} alt="Logo" style={{ height: 40, marginRight: 10 }} />
+          <img src={logoLight} alt="Logo" style={{ height: 40 }} />
         </Box>
       </Toolbar>
       <List>
@@ -82,30 +82,65 @@ const NavMenu = () => {
         position="fixed" 
         sx={{ 
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: mode === 'dark' ? '#333' : '#fff'
+          backgroundColor: mode === 'dark' ? '#121212' : '#ffffff',
+          boxShadow: 'none',
+          borderBottom: `1px solid ${mode === 'dark' ? '#333333' : '#e0e0e0'}`
         }}
       >
-        <Toolbar>
-          {isMobile && (
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2 }}
-            >
-              {mobileOpen ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
-          )}
-          <Box display="flex" alignItems="center" justifyContent="flex-start" sx={{ flexGrow: 1 }}>
-            <img src={logo} alt="Logo" style={{ height: 40, marginRight: 10 }} />
-          </Box>
-          {!isMobile && (
-            <Tooltip title="Login with MetaNet ID">
-              <Button color="inherit" onClick={handleLoginClick}>
-                Login with MetaNet ID
-              </Button>
-            </Tooltip>
+        <Toolbar 
+          sx={{ 
+            justifyContent: 'space-between',
+            backgroundColor: mode === 'dark' ? '#121212' : '#ffffff',
+          }}
+        >
+          {isMobile ? (
+            <>
+              <IconButton
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{
+                  color: mode === 'dark' ? '#ffffff' : '#000000',
+                }}
+              >
+                {mobileOpen ? <CloseIcon /> : <MenuIcon />}
+              </IconButton>
+              <Box 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center" 
+                sx={{ 
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                }}
+              >
+                <img 
+                  src={mode === 'dark' ? logoDark : logoLight} 
+                  alt="Logo" 
+                  style={{ height: 40 }} 
+                />
+              </Box>
+            </>
+          ) : (
+            <>
+              <Box display="flex" alignItems="center">
+                <img 
+                  src={mode === 'dark' ? logoDark : logoLight} 
+                  alt="Logo" 
+                  style={{ height: 40, marginRight: 16 }} 
+                />
+              </Box>
+              <Tooltip title="Login with MetaNet ID">
+                <Button 
+                  variant="contained"
+                  color="primary"
+                  onClick={handleLoginClick}
+                >
+                  Login with MetaNet ID
+                </Button>
+              </Tooltip>
+            </>
           )}
         </Toolbar>
       </AppBar>
@@ -113,39 +148,50 @@ const NavMenu = () => {
         component="nav"
         sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}
       >
-        {isMobile ? (
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true,
-            }}
-            sx={{
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
-            }}
-          >
-            {drawer}
-          </Drawer>
-        ) : (
-          <Drawer
-            variant="permanent"
-            sx={{
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
-            }}
-            open
-          >
-            {drawer}
-          </Drawer>
-        )}
+        <Drawer
+          variant={isMobile ? "temporary" : "permanent"}
+          open={isMobile ? mobileOpen : true}
+          onClose={isMobile ? handleDrawerToggle : undefined}
+          ModalProps={{
+            keepMounted: true,
+          }}
+          sx={{
+            '& .MuiDrawer-paper': { 
+              boxSizing: 'border-box', 
+              width: 240,
+              backgroundColor: mode === 'dark' ? '#121212' : '#ffffff',
+              color: mode === 'dark' ? '#ffffff' : '#000000',
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
       </Box>
-      <Dialog open={modalOpen} onClose={handleCloseModal}>
+      <Dialog 
+        open={modalOpen} 
+        onClose={handleCloseModal}
+        PaperProps={{
+          style: {
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+          },
+        }}
+      >
         <DialogTitle>MetaNet ID verified</DialogTitle>
         <DialogContent>
           <Typography>Your MetaNet ID has been successfully verified.</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="primary" variant="contained">
+          <Button 
+            onClick={handleCloseModal} 
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              color: '#ffffff',
+              '&:hover': {
+                backgroundColor: theme.palette.primary.dark,
+              },
+            }}
+          >
             Continue
           </Button>
         </DialogActions>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Box, useMediaQuery, useTheme, Grid } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import NavMenu from './components/NavMenu';
 import Dashboard from './components/Dashboard';
 import DiveLogList from './components/divelogs/DiveLogList';
@@ -17,33 +17,70 @@ import Register from './components/auth/Register';
 
 const App = () => {
   const theme = useTheme();
-  const isMediumScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Router>
-      <Grid container>
-        <Grid item xs={12} md={3}>
-          <NavMenu />
-        </Grid>
-        <Grid item xs={12} md={9}>
-          <Box component="main" sx={{ mt: isMediumScreen ? 7 : 8, p: 3 }}>
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/divelogs" element={<DiveLogList />} />
-              <Route path="/divelog/new" element={<DiveLogForm />} />
-              <Route path="/equipment" element={<EquipmentList />} />
-              <Route path="/equipment/new" element={<EquipmentForm />} />
-              <Route path="/medicalrecords" element={<MedicalRecords />} />
-              <Route path="/qualifications" element={<Qualifications />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-            </Routes>
+      <Box 
+        sx={{ 
+          display: 'flex',
+          minHeight: '100vh',
+          maxWidth: '100vw',
+          overflow: 'hidden'
+        }}
+      >
+        <NavMenu />
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            width: '100%',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          <Box sx={{ height: { xs: '64px', sm: '64px', md: '72px' } }} />
+          <Box
+            sx={{
+              flexGrow: 1,
+              overflow: 'auto',
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              p: { xs: 2, sm: 3 },
+            }}
+          >
+            <Box
+              sx={{
+                width: '100%',
+                maxWidth: '1200px',
+                margin: '0 auto',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/divelogs" element={<DiveLogList />} />
+                <Route path="/divelog/new" element={<DiveLogForm />} />
+                <Route path="/equipment" element={<EquipmentList />} />
+                <Route path="/equipment/new" element={<EquipmentForm />} />
+                <Route path="/medicalrecords" element={<MedicalRecords />} />
+                <Route path="/qualifications" element={<Qualifications />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Routes>
+            </Box>
           </Box>
-        </Grid>
-      </Grid>
+        </Box>
+      </Box>
     </Router>
   );
 };
